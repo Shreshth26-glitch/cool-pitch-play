@@ -809,7 +809,7 @@ function Contact() {
               className="absolute inset-0 h-full w-full grayscale-[0.4] contrast-125"
               loading="lazy"
             />
-            <div className="pointer-events-none absolute inset-0" style={{ background: "linear-gradient(180deg, transparent 60%, oklch(0.14 0.02 165 / 0.7))" }} />
+            <div className="pointer-events-none absolute inset-0" style={{ background: "linear-gradient(180deg, transparent 60%, oklch(0.14 0.008 60 / 0.7))" }} />
             <div className="absolute bottom-6 left-6 right-6 pointer-events-none">
               <div className="rounded-2xl glass-strong p-4 flex items-center gap-3">
                 <div className="grid h-10 w-10 place-items-center rounded-full bg-primary/20 text-primary shrink-0">
