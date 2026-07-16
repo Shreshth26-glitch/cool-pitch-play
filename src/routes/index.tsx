@@ -467,15 +467,13 @@ function Facilities() {
 /* ---------------- Pricing ---------------- */
 
 function Pricing({ onBook }: { onBook: () => void }) {
-  const plans = [
-    { name: "Morning", price: "₹799", hint: "6 AM – 12 PM", perks: ["1 hour slot", "Free equipment", "Water refill"] },
-    { name: "Afternoon", price: "₹899", hint: "12 PM – 5 PM", perks: ["1 hour slot", "Mist cooling on", "Free equipment"] },
-    { name: "Evening", price: "₹1,199", hint: "5 PM – 9 PM", perks: ["1 hour slot", "Floodlights", "Music system"], popular: true },
-    { name: "Night", price: "₹1,499", hint: "9 PM – 2 AM", perks: ["1 hour slot", "Full floodlights", "Music + Scoreboard"] },
-    { name: "Weekend", price: "₹1,599", hint: "Sat & Sun", perks: ["Priority booking", "Extended slots", "Photography"] },
-    { name: "Tournament", price: "Custom", hint: "Full-day / Multi-day", perks: ["Trophies & scoreboard", "Umpire optional", "Live-stream setup"] },
-    { name: "Corporate", price: "₹9,999", hint: "Team packages", perks: ["3-hour block", "Refreshments", "Photography"] },
-    { name: "Practice", price: "₹499", hint: "Off-peak drills", perks: ["30 min slot", "Bowling machine", "Coaching add-on"] },
+  const perks = [
+    "1 hour of premium turf time",
+    "Mist cooling system included",
+    "LED floodlights & music system",
+    "Free equipment (bats, balls, helmets)",
+    "Changing rooms & drinking water",
+    "Free secure parking",
   ];
   return (
     <section id="pricing" className="relative py-24 md:py-32">
@@ -484,47 +482,46 @@ function Pricing({ onBook }: { onBook: () => void }) {
           <Reveal><SectionLabel>Pricing</SectionLabel></Reveal>
           <Reveal delay={0.1}>
             <h2 className="mt-5 font-display text-[clamp(2rem,4.5vw,3.75rem)] font-bold tracking-tight">
-              Transparent. <span className="text-emerald-gradient">Fair. Premium.</span>
+              One flat rate. <span className="text-emerald-gradient">All included.</span>
             </h2>
           </Reveal>
           <Reveal delay={0.2}>
-            <p className="mt-4 text-muted-foreground">Pick a slot that fits your team. All prices include mist cooling during summer months.</p>
+            <p className="mt-4 text-muted-foreground">No hidden fees, no peak-hour markups. Every slot ships with the full FrostPitch experience.</p>
           </Reveal>
         </div>
 
-        <div className="mt-14 grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {plans.map((p, i) => (
-            <Reveal key={i} delay={(i % 4) * 0.06}>
-              <motion.div whileHover={{ y: -8 }} className={`relative h-full rounded-3xl p-6 transition ${p.popular ? "glass-strong glow-emerald border-primary/40" : "glass hover:glass-strong"}`}>
-                {p.popular && (
-                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-primary px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-primary-foreground shadow-[var(--shadow-glow)]">
-                    Most Popular
-                  </div>
-                )}
-                <div className="text-xs uppercase tracking-[0.2em] text-muted-foreground">{p.name}</div>
-                <div className="mt-3 flex items-baseline gap-1">
-                  <span className="text-4xl font-bold tracking-tight">{p.price}</span>
-                  <span className="text-xs text-muted-foreground">/ hr</span>
-                </div>
-                <div className="mt-1 text-xs text-muted-foreground">{p.hint}</div>
-                <ul className="mt-5 space-y-2">
-                  {p.perks.map((perk, j) => (
-                    <li key={j} className="flex items-center gap-2 text-sm text-muted-foreground">
-                      <Check className="h-3.5 w-3.5 text-primary shrink-0" /> {perk}
-                    </li>
-                  ))}
-                </ul>
-                <Button onClick={onBook} className={`mt-6 w-full rounded-full ${p.popular ? "bg-primary text-primary-foreground" : "bg-white/5 hover:bg-white/10 text-foreground"}`}>
-                  Book slot
-                </Button>
-              </motion.div>
-            </Reveal>
-          ))}
+        <div className="mt-14 max-w-lg mx-auto">
+          <Reveal>
+            <motion.div whileHover={{ y: -8 }} className="relative rounded-3xl glass-strong glow-emerald border border-primary/40 p-8 md:p-10 text-center">
+              <div className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-primary px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-primary-foreground shadow-[var(--shadow-glow)]">
+                Standard Slot
+              </div>
+              <div className="text-xs uppercase tracking-[0.25em] text-muted-foreground">Per hour · All day, every day</div>
+              <div className="mt-4 flex items-baseline justify-center gap-1">
+                <span className="text-6xl md:text-7xl font-bold tracking-tight text-emerald-gradient">₹800</span>
+                <span className="text-sm text-muted-foreground">/ hr</span>
+              </div>
+              <ul className="mt-8 space-y-3 text-left max-w-sm mx-auto">
+                {perks.map((perk, j) => (
+                  <li key={j} className="flex items-center gap-3 text-sm">
+                    <div className="grid h-6 w-6 place-items-center rounded-full bg-primary/15 text-primary shrink-0">
+                      <Check className="h-3.5 w-3.5" />
+                    </div>
+                    {perk}
+                  </li>
+                ))}
+              </ul>
+              <Button onClick={onBook} size="lg" className="mt-8 w-full rounded-full bg-primary text-primary-foreground shadow-[var(--shadow-glow)] hover:opacity-90">
+                Book your slot <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
+            </motion.div>
+          </Reveal>
         </div>
       </div>
     </section>
   );
 }
+
 
 /* ---------------- Gallery (masonry) ---------------- */
 
