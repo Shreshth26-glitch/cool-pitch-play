@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState, useRef, type ReactNode } from "react";
 import { motion, AnimatePresence, useScroll, useTransform, useSpring } from "framer-motion";
 import {
@@ -24,6 +24,8 @@ import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { toast } from "sonner";
+import { getBookedSlots, createBooking } from "../lib/api-client";
+import { useAuth } from "../hooks/use-auth";
 
 export const Route = createFileRoute("/")({
   component: LandingPage,
@@ -102,6 +104,7 @@ function Loader({ onDone }: { onDone: () => void }) {
 /* ---------------- Nav ---------------- */
 
 function Nav({ onBook }: { onBook: () => void }) {
+  const { user, isAuthenticated, logout } = useAuth();
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   useEffect(() => {
@@ -143,6 +146,26 @@ function Nav({ onBook }: { onBook: () => void }) {
             ))}
           </nav>
           <div className="flex items-center gap-2">
+            {/* Desktop Auth Links */}
+            {isAuthenticated ? (
+              <>
+                <Link to="/my-bookings">
+                  <Button size="sm" variant="outline" className="rounded-full glass border-border hidden md:inline-flex hover:bg-white/5">
+                    My Bookings
+                  </Button>
+                </Link>
+                <Button onClick={logout} size="sm" variant="ghost" className="rounded-full hidden md:inline-flex hover:bg-white/5 text-muted-foreground hover:text-rose-500">
+                  Logout
+                </Button>
+              </>
+            ) : (
+              <Link to="/login">
+                <Button size="sm" variant="ghost" className="rounded-full hidden md:inline-flex hover:bg-white/5">
+                  Login
+                </Button>
+              </Link>
+            )}
+
             <Button onClick={onBook} size="sm" className="rounded-full bg-primary text-primary-foreground hover:opacity-90 hidden sm:inline-flex shadow-[var(--shadow-glow)]">
               Book Now <ArrowRight className="ml-1 h-4 w-4" />
             </Button>
@@ -166,6 +189,23 @@ function Nav({ onBook }: { onBook: () => void }) {
                   {l.label}
                 </a>
               ))}
+              
+              {/* Mobile Auth Links */}
+              {isAuthenticated ? (
+                <>
+                  <Link to="/my-bookings" onClick={() => setOpen(false)} className="block py-3 text-sm border-b border-border text-primary font-medium">
+                    My Bookings
+                  </Link>
+                  <button onClick={() => { setOpen(false); logout(); }} className="block w-full text-left py-3 text-sm border-b border-border text-rose-500 font-medium">
+                    Logout
+                  </button>
+                </>
+              ) : (
+                <Link to="/login" onClick={() => setOpen(false)} className="block py-3 text-sm border-b border-border text-primary font-medium">
+                  Login / Sign Up
+                </Link>
+              )}
+
               <Button onClick={() => { setOpen(false); onBook(); }} className="mt-3 w-full rounded-full">Book Now</Button>
             </motion.div>
           )}
@@ -854,21 +894,77 @@ function Footer() {
 /* ---------------- Booking Dialog ---------------- */
 
 function BookingDialog({ open, onOpenChange }: { open: boolean; onOpenChange: (o: boolean) => void }) {
+  const { user, token } = useAuth();
   const [confirmed, setConfirmed] = useState<null | { name: string; date: string; time: string }>(null);
   const times = ["06:00", "08:00", "10:00", "12:00", "14:00", "16:00", "18:00", "20:00", "22:00", "00:00"];
-  const bookedTimes = ["10:00", "18:00"];
+  const [bookedTimes, setBookedTimes] = useState<string[]>([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [form, setForm] = useState({ date: "", time: "", duration: "1", name: "", phone: "", email: "", team: "", notes: "" });
 
-  const submit = (e: React.FormEvent) => {
+  // Pre-fill player details if logged in
+  useEffect(() => {
+    if (open && user) {
+      setForm((prev) => ({
+        ...prev,
+        name: user.name,
+        phone: user.phone,
+        email: user.email || "",
+      }));
+    }
+  }, [open, user]);
+
+  // Fetch booked slots when date/duration changes
+  useEffect(() => {
+    if (!form.date) {
+      setBookedTimes([]);
+      return;
+    }
+
+    let active = true;
+    getBookedSlots({ date: form.date, duration: Number(form.duration) })
+      .then((slots) => {
+        if (active) {
+          setBookedTimes(slots);
+        }
+      })
+      .catch((err) => {
+        console.error("Failed to fetch booked slots:", err);
+      });
+
+    return () => {
+      active = false;
+    };
+  }, [form.date, form.duration]);
+
+  // Reset selected time if it becomes booked (e.g. if user changes duration or date)
+  useEffect(() => {
+    if (form.time && bookedTimes.includes(form.time)) {
+      setForm((prev) => ({ ...prev, time: "" }));
+    }
+  }, [bookedTimes, form.time]);
+
+  const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!form.name || !form.phone || !form.date || !form.time) {
       toast.error("Please fill required fields");
       return;
     }
-    // TODO: connect to booking API (MongoDB / Razorpay / auth)
-    setConfirmed({ name: form.name, date: form.date, time: form.time });
-    toast.success("Booking request sent!");
+
+    setIsSubmitting(true);
+    try {
+      const res = await createBooking({
+        ...form,
+        duration: Number(form.duration),
+      }, token || undefined);
+      setConfirmed({ name: res.name, date: res.date, time: res.time });
+      toast.success("Booking confirmed!");
+    } catch (err: any) {
+      console.error(err);
+      toast.error(err.message || "Failed to book slot");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -908,7 +1004,7 @@ function BookingDialog({ open, onOpenChange }: { open: boolean; onOpenChange: (o
                     const active = form.time === t;
                     return (
                       <button
-                        key={t} type="button" disabled={booked}
+                         key={t} type="button" disabled={booked}
                         onClick={() => setForm({ ...form, time: t })}
                         className={`rounded-full px-3.5 py-1.5 text-xs border transition ${
                           booked ? "opacity-40 cursor-not-allowed border-border line-through" :
@@ -941,8 +1037,8 @@ function BookingDialog({ open, onOpenChange }: { open: boolean; onOpenChange: (o
               </div>
 
               <DialogFooter className="mt-2">
-                <Button type="submit" className="rounded-full bg-primary text-primary-foreground w-full sm:w-auto shadow-[var(--shadow-glow)]">
-                  Confirm booking <ArrowRight className="ml-2 h-4 w-4" />
+                <Button type="submit" disabled={isSubmitting} className="rounded-full bg-primary text-primary-foreground w-full sm:w-auto shadow-[var(--shadow-glow)]">
+                  {isSubmitting ? "Confirming..." : "Confirm booking"} <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
               </DialogFooter>
             </form>
