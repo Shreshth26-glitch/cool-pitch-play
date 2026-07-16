@@ -71,7 +71,7 @@ function Cursor() {
       className="pointer-events-none fixed left-0 top-0 z-[100] hidden h-8 w-8 rounded-full mix-blend-screen md:block"
       animate={{ x: pos.x - 16, y: pos.y - 16, opacity: visible ? 1 : 0 }}
       transition={{ type: "spring", stiffness: 500, damping: 40, mass: 0.3 }}
-      style={{ background: "radial-gradient(circle, oklch(0.78 0.21 155 / 0.6), transparent 70%)", boxShadow: "0 0 30px oklch(0.72 0.19 155 / 0.6)" }}
+      style={{ background: "radial-gradient(circle, oklch(0.88 0.15 82 / 0.6), transparent 70%)", boxShadow: "0 0 30px oklch(0.80 0.14 78 / 0.6)" }}
     />
   );
 }
@@ -199,8 +199,9 @@ function Hero({ onBook }: { onBook: () => void }) {
 
       {/* Floodlight beams */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute top-0 left-1/4 h-[70vh] w-64 -translate-x-1/2 rotate-12 blur-3xl opacity-30 animate-flicker" style={{ background: "linear-gradient(to bottom, oklch(0.9 0.15 165), transparent)" }} />
-        <div className="absolute top-0 right-1/4 h-[70vh] w-64 translate-x-1/2 -rotate-12 blur-3xl opacity-30 animate-flicker" style={{ background: "linear-gradient(to bottom, oklch(0.9 0.15 165), transparent)", animationDelay: "1s" }} />
+        <div className="absolute top-0 left-1/4 h-[70vh] w-64 -translate-x-1/2 rotate-12 blur-3xl opacity-30 animate-flicker" style={{ background: "linear-gradient(to bottom, oklch(0.95 0.12 85), transparent)" }} />
+        <div className="absolute top-0 right-1/4 h-[70vh] w-64 translate-x-1/2 -rotate-12 blur-3xl opacity-30 animate-flicker" style={{ background: "linear-gradient(to bottom, oklch(0.95 0.12 85), transparent)", animationDelay: "1s" }} />
+
       </div>
 
       {/* Grass / mist particles */}
@@ -253,9 +254,8 @@ function Hero({ onBook }: { onBook: () => void }) {
 
         {/* Stats */}
         <Reveal delay={0.6}>
-          <div className="mt-14 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6 max-w-5xl">
+          <div className="mt-14 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5 max-w-5xl">
             {[
-              { icon: Star, label: "★★★★★", sub: "Rating" },
               { icon: Users, label: "1000+", sub: "Happy Players" },
               { icon: Trophy, label: "Pro", sub: "Turf Grade" },
               { icon: Zap, label: "LED", sub: "Floodlights" },
@@ -274,6 +274,7 @@ function Hero({ onBook }: { onBook: () => void }) {
             ))}
           </div>
         </Reveal>
+
       </motion.div>
 
       {/* Scroll indicator */}
@@ -298,7 +299,7 @@ function CoolingFeature() {
   return (
     <section id="features" className="relative py-24 md:py-36 overflow-hidden">
       <div className="absolute inset-0 grid-pattern opacity-40" />
-      <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse at center, oklch(0.72 0.19 155 / 0.15), transparent 60%)" }} />
+      <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse at center, oklch(0.80 0.14 78 / 0.15), transparent 60%)" }} />
 
       <div className="relative mx-auto max-w-7xl px-4 md:px-6">
         <div className="max-w-3xl">
@@ -367,7 +368,7 @@ function CoolingFeature() {
 /* ---------------- About ---------------- */
 
 function About() {
-  const perfect = ["Friends & Family", "Corporate Matches", "Night Matches", "Weekend Leagues", "Practice Sessions", "School & College Tournaments"];
+  const perfect = ["Friends & Family", "Corporate Matches", "Night Matches", "Practice Sessions"];
   return (
     <section id="about" className="relative py-24 md:py-32">
       <div className="mx-auto max-w-7xl px-4 md:px-6 grid lg:grid-cols-2 gap-12 items-center">
@@ -377,14 +378,8 @@ function About() {
               <img src={aboutImg} alt="Aerial view of FrostPitch cricket turf" loading="lazy" width={1400} height={1000} className="h-full w-full object-cover" />
               <div className="absolute inset-0 bg-gradient-to-tr from-background/60 via-transparent to-transparent" />
             </div>
-            <motion.div
-              initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
-              className="absolute -bottom-8 -right-4 md:-right-8 rounded-3xl glass-strong p-5 w-56 shadow-[var(--shadow-elegant)]"
-            >
-              <div className="flex items-center gap-2 text-primary"><Star className="h-4 w-4 fill-primary" /><Star className="h-4 w-4 fill-primary" /><Star className="h-4 w-4 fill-primary" /><Star className="h-4 w-4 fill-primary" /><Star className="h-4 w-4 fill-primary" /></div>
-              <div className="mt-2 text-sm">Rated <span className="font-bold">4.9</span> by 500+ players in Bhilwara</div>
-            </motion.div>
           </div>
+
         </Reveal>
 
         <div>
@@ -430,8 +425,8 @@ function Facilities() {
     { icon: Car, label: "Parking" },
     { icon: Users, label: "Seating Area" },
     { icon: Award, label: "Equipment Rental" },
-    { icon: Sparkles, label: "Scoreboard" },
     { icon: Heart, label: "Spectator Area" },
+
     { icon: Music, label: "Music System" },
     { icon: Camera, label: "CCTV Security" },
     { icon: Shield, label: "First Aid" },
@@ -472,15 +467,13 @@ function Facilities() {
 /* ---------------- Pricing ---------------- */
 
 function Pricing({ onBook }: { onBook: () => void }) {
-  const plans = [
-    { name: "Morning", price: "₹799", hint: "6 AM – 12 PM", perks: ["1 hour slot", "Free equipment", "Water refill"] },
-    { name: "Afternoon", price: "₹899", hint: "12 PM – 5 PM", perks: ["1 hour slot", "Mist cooling on", "Free equipment"] },
-    { name: "Evening", price: "₹1,199", hint: "5 PM – 9 PM", perks: ["1 hour slot", "Floodlights", "Music system"], popular: true },
-    { name: "Night", price: "₹1,499", hint: "9 PM – 2 AM", perks: ["1 hour slot", "Full floodlights", "Music + Scoreboard"] },
-    { name: "Weekend", price: "₹1,599", hint: "Sat & Sun", perks: ["Priority booking", "Extended slots", "Photography"] },
-    { name: "Tournament", price: "Custom", hint: "Full-day / Multi-day", perks: ["Trophies & scoreboard", "Umpire optional", "Live-stream setup"] },
-    { name: "Corporate", price: "₹9,999", hint: "Team packages", perks: ["3-hour block", "Refreshments", "Photography"] },
-    { name: "Practice", price: "₹499", hint: "Off-peak drills", perks: ["30 min slot", "Bowling machine", "Coaching add-on"] },
+  const perks = [
+    "1 hour of premium turf time",
+    "Mist cooling system included",
+    "LED floodlights & music system",
+    "Free equipment (bats, balls, helmets)",
+    "Changing rooms & drinking water",
+    "Free secure parking",
   ];
   return (
     <section id="pricing" className="relative py-24 md:py-32">
@@ -489,47 +482,46 @@ function Pricing({ onBook }: { onBook: () => void }) {
           <Reveal><SectionLabel>Pricing</SectionLabel></Reveal>
           <Reveal delay={0.1}>
             <h2 className="mt-5 font-display text-[clamp(2rem,4.5vw,3.75rem)] font-bold tracking-tight">
-              Transparent. <span className="text-emerald-gradient">Fair. Premium.</span>
+              One flat rate. <span className="text-emerald-gradient">All included.</span>
             </h2>
           </Reveal>
           <Reveal delay={0.2}>
-            <p className="mt-4 text-muted-foreground">Pick a slot that fits your team. All prices include mist cooling during summer months.</p>
+            <p className="mt-4 text-muted-foreground">No hidden fees, no peak-hour markups. Every slot ships with the full FrostPitch experience.</p>
           </Reveal>
         </div>
 
-        <div className="mt-14 grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {plans.map((p, i) => (
-            <Reveal key={i} delay={(i % 4) * 0.06}>
-              <motion.div whileHover={{ y: -8 }} className={`relative h-full rounded-3xl p-6 transition ${p.popular ? "glass-strong glow-emerald border-primary/40" : "glass hover:glass-strong"}`}>
-                {p.popular && (
-                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-primary px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-primary-foreground shadow-[var(--shadow-glow)]">
-                    Most Popular
-                  </div>
-                )}
-                <div className="text-xs uppercase tracking-[0.2em] text-muted-foreground">{p.name}</div>
-                <div className="mt-3 flex items-baseline gap-1">
-                  <span className="text-4xl font-bold tracking-tight">{p.price}</span>
-                  <span className="text-xs text-muted-foreground">/ hr</span>
-                </div>
-                <div className="mt-1 text-xs text-muted-foreground">{p.hint}</div>
-                <ul className="mt-5 space-y-2">
-                  {p.perks.map((perk, j) => (
-                    <li key={j} className="flex items-center gap-2 text-sm text-muted-foreground">
-                      <Check className="h-3.5 w-3.5 text-primary shrink-0" /> {perk}
-                    </li>
-                  ))}
-                </ul>
-                <Button onClick={onBook} className={`mt-6 w-full rounded-full ${p.popular ? "bg-primary text-primary-foreground" : "bg-white/5 hover:bg-white/10 text-foreground"}`}>
-                  Book slot
-                </Button>
-              </motion.div>
-            </Reveal>
-          ))}
+        <div className="mt-14 max-w-lg mx-auto">
+          <Reveal>
+            <motion.div whileHover={{ y: -8 }} className="relative rounded-3xl glass-strong glow-emerald border border-primary/40 p-8 md:p-10 text-center">
+              <div className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-primary px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-primary-foreground shadow-[var(--shadow-glow)]">
+                Standard Slot
+              </div>
+              <div className="text-xs uppercase tracking-[0.25em] text-muted-foreground">Per hour · All day, every day</div>
+              <div className="mt-4 flex items-baseline justify-center gap-1">
+                <span className="text-6xl md:text-7xl font-bold tracking-tight text-emerald-gradient">₹800</span>
+                <span className="text-sm text-muted-foreground">/ hr</span>
+              </div>
+              <ul className="mt-8 space-y-3 text-left max-w-sm mx-auto">
+                {perks.map((perk, j) => (
+                  <li key={j} className="flex items-center gap-3 text-sm">
+                    <div className="grid h-6 w-6 place-items-center rounded-full bg-primary/15 text-primary shrink-0">
+                      <Check className="h-3.5 w-3.5" />
+                    </div>
+                    {perk}
+                  </li>
+                ))}
+              </ul>
+              <Button onClick={onBook} size="lg" className="mt-8 w-full rounded-full bg-primary text-primary-foreground shadow-[var(--shadow-glow)] hover:opacity-90">
+                Book your slot <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
+            </motion.div>
+          </Reveal>
         </div>
       </div>
     </section>
   );
 }
+
 
 /* ---------------- Gallery (masonry) ---------------- */
 
@@ -687,58 +679,6 @@ function Testimonials() {
   );
 }
 
-/* ---------------- Tournaments ---------------- */
-
-function Tournaments({ onBook }: { onBook: () => void }) {
-  const events = [
-    { tag: "Weekend Cup", title: "FrostPitch Weekend Championship", date: "Every Saturday", prize: "₹25,000 prize pool", spots: "8 teams" },
-    { tag: "Corporate", title: "Bhilwara Corporate League", date: "Sep 15 – Oct 20", prize: "Trophy + Media coverage", spots: "12 teams" },
-    { tag: "School", title: "Inter-School Cricket Cup", date: "Nov 5 – Nov 12", prize: "Individual trophies", spots: "16 teams" },
-    { tag: "Summer", title: "Cool Nights Mist League", date: "Peak Summer 2026", prize: "₹50,000 prize pool", spots: "10 teams" },
-  ];
-  return (
-    <section className="relative py-24 md:py-32">
-      <div className="mx-auto max-w-7xl px-4 md:px-6">
-        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6">
-          <div className="max-w-2xl">
-            <Reveal><SectionLabel>Tournaments</SectionLabel></Reveal>
-            <Reveal delay={0.1}>
-              <h2 className="mt-5 font-display text-[clamp(2rem,4.5vw,3.75rem)] font-bold tracking-tight">
-                Compete under <span className="text-emerald-gradient">the lights.</span>
-              </h2>
-            </Reveal>
-          </div>
-          <Reveal>
-            <Button onClick={onBook} variant="outline" className="rounded-full glass border-border">
-              Register your team <ArrowRight className="ml-2 h-4 w-4" />
-            </Button>
-          </Reveal>
-        </div>
-
-        <div className="mt-12 grid md:grid-cols-2 gap-4">
-          {events.map((e, i) => (
-            <Reveal key={i} delay={(i % 2) * 0.06}>
-              <motion.div whileHover={{ y: -6 }} className="group rounded-3xl glass p-6 md:p-8 h-full flex flex-col justify-between transition hover:glass-strong">
-                <div>
-                  <div className="inline-flex rounded-full bg-primary/15 text-primary px-3 py-1 text-[10px] uppercase tracking-widest font-semibold">{e.tag}</div>
-                  <h3 className="mt-4 text-xl md:text-2xl font-semibold tracking-tight">{e.title}</h3>
-                  <div className="mt-3 text-sm text-muted-foreground">{e.date} · {e.spots}</div>
-                </div>
-                <div className="mt-6 flex items-center justify-between gap-4 pt-6 border-t border-border">
-                  <div>
-                    <div className="text-[10px] uppercase tracking-widest text-muted-foreground">Prize</div>
-                    <div className="text-sm font-medium">{e.prize}</div>
-                  </div>
-                  <Button onClick={onBook} size="sm" className="rounded-full bg-primary text-primary-foreground">Register</Button>
-                </div>
-              </motion.div>
-            </Reveal>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
 
 /* ---------------- FAQ ---------------- */
 
@@ -808,7 +748,7 @@ function Contact() {
               className="absolute inset-0 h-full w-full grayscale-[0.4] contrast-125"
               loading="lazy"
             />
-            <div className="pointer-events-none absolute inset-0" style={{ background: "linear-gradient(180deg, transparent 60%, oklch(0.14 0.02 165 / 0.7))" }} />
+            <div className="pointer-events-none absolute inset-0" style={{ background: "linear-gradient(180deg, transparent 60%, oklch(0.14 0.008 60 / 0.7))" }} />
             <div className="absolute bottom-6 left-6 right-6 pointer-events-none">
               <div className="rounded-2xl glass-strong p-4 flex items-center gap-3">
                 <div className="grid h-10 w-10 place-items-center rounded-full bg-primary/20 text-primary shrink-0">
@@ -1085,7 +1025,7 @@ function LandingPage() {
           <Gallery />
           <WhyUs />
           <Testimonials />
-          <Tournaments onBook={openBook} />
+          
           <FAQ />
           <Contact />
         </main>
