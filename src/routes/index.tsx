@@ -425,8 +425,8 @@ function Facilities() {
     { icon: Car, label: "Parking" },
     { icon: Users, label: "Seating Area" },
     { icon: Award, label: "Equipment Rental" },
-
     { icon: Heart, label: "Spectator Area" },
+
     { icon: Music, label: "Music System" },
     { icon: Camera, label: "CCTV Security" },
     { icon: Shield, label: "First Aid" },
