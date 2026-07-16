@@ -679,58 +679,6 @@ function Testimonials() {
   );
 }
 
-/* ---------------- Tournaments ---------------- */
-
-function Tournaments({ onBook }: { onBook: () => void }) {
-  const events = [
-    { tag: "Weekend Cup", title: "FrostPitch Weekend Championship", date: "Every Saturday", prize: "₹25,000 prize pool", spots: "8 teams" },
-    { tag: "Corporate", title: "Bhilwara Corporate League", date: "Sep 15 – Oct 20", prize: "Trophy + Media coverage", spots: "12 teams" },
-    { tag: "School", title: "Inter-School Cricket Cup", date: "Nov 5 – Nov 12", prize: "Individual trophies", spots: "16 teams" },
-    { tag: "Summer", title: "Cool Nights Mist League", date: "Peak Summer 2026", prize: "₹50,000 prize pool", spots: "10 teams" },
-  ];
-  return (
-    <section className="relative py-24 md:py-32">
-      <div className="mx-auto max-w-7xl px-4 md:px-6">
-        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6">
-          <div className="max-w-2xl">
-            <Reveal><SectionLabel>Tournaments</SectionLabel></Reveal>
-            <Reveal delay={0.1}>
-              <h2 className="mt-5 font-display text-[clamp(2rem,4.5vw,3.75rem)] font-bold tracking-tight">
-                Compete under <span className="text-emerald-gradient">the lights.</span>
-              </h2>
-            </Reveal>
-          </div>
-          <Reveal>
-            <Button onClick={onBook} variant="outline" className="rounded-full glass border-border">
-              Register your team <ArrowRight className="ml-2 h-4 w-4" />
-            </Button>
-          </Reveal>
-        </div>
-
-        <div className="mt-12 grid md:grid-cols-2 gap-4">
-          {events.map((e, i) => (
-            <Reveal key={i} delay={(i % 2) * 0.06}>
-              <motion.div whileHover={{ y: -6 }} className="group rounded-3xl glass p-6 md:p-8 h-full flex flex-col justify-between transition hover:glass-strong">
-                <div>
-                  <div className="inline-flex rounded-full bg-primary/15 text-primary px-3 py-1 text-[10px] uppercase tracking-widest font-semibold">{e.tag}</div>
-                  <h3 className="mt-4 text-xl md:text-2xl font-semibold tracking-tight">{e.title}</h3>
-                  <div className="mt-3 text-sm text-muted-foreground">{e.date} · {e.spots}</div>
-                </div>
-                <div className="mt-6 flex items-center justify-between gap-4 pt-6 border-t border-border">
-                  <div>
-                    <div className="text-[10px] uppercase tracking-widest text-muted-foreground">Prize</div>
-                    <div className="text-sm font-medium">{e.prize}</div>
-                  </div>
-                  <Button onClick={onBook} size="sm" className="rounded-full bg-primary text-primary-foreground">Register</Button>
-                </div>
-              </motion.div>
-            </Reveal>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
 
 /* ---------------- FAQ ---------------- */
 
