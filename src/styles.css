@@ -97,7 +97,7 @@
     -webkit-font-smoothing: antialiased;
   }
   h1, h2, h3, h4 { font-family: var(--font-display); letter-spacing: -0.02em; }
-  ::selection { background: oklch(0.72 0.19 155 / 0.4); color: white; }
+  ::selection { background: oklch(0.80 0.14 78 / 0.4); color: white; }
 }
 
 @utility glass {
@@ -113,22 +113,23 @@
 }
 
 @utility text-gradient {
-  background: linear-gradient(135deg, oklch(0.98 0.005 180), oklch(0.82 0.22 158));
+  background: linear-gradient(135deg, oklch(0.98 0.005 80), oklch(0.88 0.15 82));
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
 }
 
 @utility text-emerald-gradient {
-  background: linear-gradient(135deg, oklch(0.72 0.19 155), oklch(0.88 0.22 165));
+  background: linear-gradient(135deg, oklch(0.80 0.14 78), oklch(0.92 0.15 88));
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
 }
 
 @utility glow-emerald {
-  box-shadow: 0 0 40px -8px oklch(0.72 0.19 155 / 0.6), inset 0 1px 0 oklch(1 0 0 / 0.1);
+  box-shadow: 0 0 40px -8px oklch(0.80 0.14 78 / 0.6), inset 0 1px 0 oklch(1 0 0 / 0.1);
 }
+
 
 @utility grid-pattern {
   background-image:
