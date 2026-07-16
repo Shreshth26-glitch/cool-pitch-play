@@ -1025,7 +1025,7 @@ function LandingPage() {
           <Gallery />
           <WhyUs />
           <Testimonials />
-          <Tournaments onBook={openBook} />
+          
           <FAQ />
           <Contact />
         </main>
