@@ -199,8 +199,9 @@ function Hero({ onBook }: { onBook: () => void }) {
 
       {/* Floodlight beams */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute top-0 left-1/4 h-[70vh] w-64 -translate-x-1/2 rotate-12 blur-3xl opacity-30 animate-flicker" style={{ background: "linear-gradient(to bottom, oklch(0.9 0.15 165), transparent)" }} />
-        <div className="absolute top-0 right-1/4 h-[70vh] w-64 translate-x-1/2 -rotate-12 blur-3xl opacity-30 animate-flicker" style={{ background: "linear-gradient(to bottom, oklch(0.9 0.15 165), transparent)", animationDelay: "1s" }} />
+        <div className="absolute top-0 left-1/4 h-[70vh] w-64 -translate-x-1/2 rotate-12 blur-3xl opacity-30 animate-flicker" style={{ background: "linear-gradient(to bottom, oklch(0.95 0.12 85), transparent)" }} />
+        <div className="absolute top-0 right-1/4 h-[70vh] w-64 translate-x-1/2 -rotate-12 blur-3xl opacity-30 animate-flicker" style={{ background: "linear-gradient(to bottom, oklch(0.95 0.12 85), transparent)", animationDelay: "1s" }} />
+
       </div>
 
       {/* Grass / mist particles */}
