@@ -254,9 +254,8 @@ function Hero({ onBook }: { onBook: () => void }) {
 
         {/* Stats */}
         <Reveal delay={0.6}>
-          <div className="mt-14 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6 max-w-5xl">
+          <div className="mt-14 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5 max-w-5xl">
             {[
-              { icon: Star, label: "★★★★★", sub: "Rating" },
               { icon: Users, label: "1000+", sub: "Happy Players" },
               { icon: Trophy, label: "Pro", sub: "Turf Grade" },
               { icon: Zap, label: "LED", sub: "Floodlights" },
@@ -275,6 +274,7 @@ function Hero({ onBook }: { onBook: () => void }) {
             ))}
           </div>
         </Reveal>
+
       </motion.div>
 
       {/* Scroll indicator */}
