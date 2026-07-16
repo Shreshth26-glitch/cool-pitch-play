@@ -378,14 +378,8 @@ function About() {
               <img src={aboutImg} alt="Aerial view of FrostPitch cricket turf" loading="lazy" width={1400} height={1000} className="h-full w-full object-cover" />
               <div className="absolute inset-0 bg-gradient-to-tr from-background/60 via-transparent to-transparent" />
             </div>
-            <motion.div
-              initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
-              className="absolute -bottom-8 -right-4 md:-right-8 rounded-3xl glass-strong p-5 w-56 shadow-[var(--shadow-elegant)]"
-            >
-              <div className="flex items-center gap-2 text-primary"><Star className="h-4 w-4 fill-primary" /><Star className="h-4 w-4 fill-primary" /><Star className="h-4 w-4 fill-primary" /><Star className="h-4 w-4 fill-primary" /><Star className="h-4 w-4 fill-primary" /></div>
-              <div className="mt-2 text-sm">Rated <span className="font-bold">4.9</span> by 500+ players in Bhilwara</div>
-            </motion.div>
           </div>
+
         </Reveal>
 
         <div>
