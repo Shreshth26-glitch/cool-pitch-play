@@ -299,7 +299,7 @@ function CoolingFeature() {
   return (
     <section id="features" className="relative py-24 md:py-36 overflow-hidden">
       <div className="absolute inset-0 grid-pattern opacity-40" />
-      <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse at center, oklch(0.72 0.19 155 / 0.15), transparent 60%)" }} />
+      <div className="absolute inset-0" style={{ background: "radial-gradient(ellipse at center, oklch(0.80 0.14 78 / 0.15), transparent 60%)" }} />
 
       <div className="relative mx-auto max-w-7xl px-4 md:px-6">
         <div className="max-w-3xl">
