@@ -71,7 +71,7 @@ function Cursor() {
       className="pointer-events-none fixed left-0 top-0 z-[100] hidden h-8 w-8 rounded-full mix-blend-screen md:block"
       animate={{ x: pos.x - 16, y: pos.y - 16, opacity: visible ? 1 : 0 }}
       transition={{ type: "spring", stiffness: 500, damping: 40, mass: 0.3 }}
-      style={{ background: "radial-gradient(circle, oklch(0.78 0.21 155 / 0.6), transparent 70%)", boxShadow: "0 0 30px oklch(0.72 0.19 155 / 0.6)" }}
+      style={{ background: "radial-gradient(circle, oklch(0.88 0.15 82 / 0.6), transparent 70%)", boxShadow: "0 0 30px oklch(0.80 0.14 78 / 0.6)" }}
     />
   );
 }
