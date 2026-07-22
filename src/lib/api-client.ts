@@ -20,6 +20,8 @@ export interface Booking {
   team?: string;
   notes?: string;
   status: "confirmed" | "cancelled" | "pending";
+  paymentMethod?: "court" | "online";
+  paymentStatus?: "unpaid" | "paid";
   userId?: string;
   createdAt: string;
 }
@@ -114,6 +116,8 @@ export async function createBooking(
     email?: string;
     team?: string;
     notes?: string;
+    paymentMethod?: "court" | "online";
+    paymentStatus?: "unpaid" | "paid";
   },
   token?: string
 ): Promise<Booking> {
@@ -206,3 +210,69 @@ export async function updateBookingStatus(
 
   return res.json();
 }
+
+// 8b. Bookings: Update Booking Payment Status (Admin Only)
+export async function updateBookingPaymentStatus(
+  id: string,
+  paymentStatus: "unpaid" | "paid",
+  token: string
+): Promise<Booking> {
+  const res = await fetch(`${API_BASE}/bookings/${id}/payment-status`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ paymentStatus }),
+  });
+
+  if (!res.ok) {
+    const text = await res.text();
+    let errorMessage = "Failed to update booking payment status";
+    try {
+      const parsed = JSON.parse(text);
+      errorMessage = parsed.error || errorMessage;
+    } catch {}
+    throw new Error(errorMessage);
+  }
+
+  return res.json();
+}
+
+// 9. Slots: Fetch Configured Available Slots
+export async function getAvailableSlots(): Promise<string[]> {
+  const res = await fetch(`${API_BASE}/settings/slots`);
+  if (!res.ok) {
+    const text = await res.text();
+    throw new Error(text || "Failed to fetch available slots configuration");
+  }
+  return res.json();
+}
+
+// 10. Slots: Update Available Slots (Admin)
+export async function updateAvailableSlots(
+  slots: string[],
+  token: string
+): Promise<{ success: boolean; slots: string[] }> {
+  const res = await fetch(`${API_BASE}/settings/slots`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ slots }),
+  });
+
+  if (!res.ok) {
+    const text = await res.text();
+    let errorMessage = "Failed to update available slots configuration";
+    try {
+      const parsed = JSON.parse(text);
+      errorMessage = parsed.error || errorMessage;
+    } catch {}
+    throw new Error(errorMessage);
+  }
+
+  return res.json();
+}
+

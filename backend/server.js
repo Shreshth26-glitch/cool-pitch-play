@@ -4,25 +4,52 @@ import dotenv from "dotenv";
 import mysql from "mysql2/promise";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import helmet from "helmet";
+import { rateLimit } from "express-rate-limit";
 
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
-const JWT_SECRET = process.env.JWT_SECRET || "frostpitchsecretkey_change_me_in_prod";
+const JWT_SECRET = process.env.JWT_SECRET || "donboscoturfsecretkey_change_me_in_prod";
+
+// Global Rate Limiter (general protection against DDoS)
+const globalLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 150, // limit each IP to 150 requests per window
+  message: { error: "Too many requests from this IP, please try again after 15 minutes." },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+// Stricter Rate Limiter for Auth & Booking submissions
+const strictLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 20, // limit each IP to 20 auth/booking requests per window
+  message: { error: "Too many requests to this endpoint, please try again after 15 minutes." },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
 
 // Configure database connection settings
 const dbConfig = {
   host: process.env.DB_HOST || "localhost",
   user: process.env.DB_USER || "root",
   password: process.env.DB_PASSWORD || "",
-  database: process.env.DB_NAME || "frostpitch",
+  database: process.env.DB_NAME || "donboscoturf",
   dateStrings: true, // Returns dates as strings to avoid timezone shifts
 };
 
 // Middleware
+app.use(helmet()); // Secure HTTP headers
+app.use(globalLimiter); // Apply global rate limiter
 app.use(cors());
 app.use(express.json());
+
+// Apply strict rate limiting to auth routes
+app.use("/api/auth/login", strictLimiter);
+app.use("/api/auth/signup", strictLimiter);
+
 
 let pool;
 
@@ -72,6 +99,24 @@ async function initializeDatabase() {
       )
     `);
 
+    // Create settings table
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS settings (
+        \`key\` VARCHAR(50) PRIMARY KEY,
+        \`value\` TEXT NOT NULL
+      )
+    `);
+
+    // Seed default available slots setting if empty
+    const [countSettings] = await pool.query("SELECT COUNT(*) as count FROM settings WHERE `key` = 'available_slots'");
+    if (countSettings[0].count === 0) {
+      console.log("Seeding default booking slots configuration...");
+      const defaultSlots = ["06:00", "08:00", "10:00", "12:00", "14:00", "16:00", "18:00", "20:00", "22:00", "00:00"];
+      await pool.query("INSERT INTO settings (`key`, \`value\`) VALUES ('available_slots', ?)", [JSON.stringify(defaultSlots)]);
+      console.log("Seeding slots configuration completed successfully.");
+    }
+
+
     // 5. Run Database Migration: Add 'userId' foreign key column to 'bookings' if missing
     const [columns] = await pool.query("SHOW COLUMNS FROM bookings LIKE 'userId'");
     if (columns.length === 0) {
@@ -79,6 +124,18 @@ async function initializeDatabase() {
       await pool.query("ALTER TABLE bookings ADD COLUMN userId VARCHAR(50) NULL");
       await pool.query("ALTER TABLE bookings ADD CONSTRAINT fk_booking_user FOREIGN KEY (userId) REFERENCES users(id) ON DELETE SET NULL");
       console.log("Migration completed successfully.");
+    }
+
+    const [payMethodCols] = await pool.query("SHOW COLUMNS FROM bookings LIKE 'paymentMethod'");
+    if (payMethodCols.length === 0) {
+      console.log("Migrating bookings database: Adding paymentMethod column...");
+      await pool.query("ALTER TABLE bookings ADD COLUMN paymentMethod ENUM('court', 'online') NOT NULL DEFAULT 'court'");
+    }
+
+    const [payStatusCols] = await pool.query("SHOW COLUMNS FROM bookings LIKE 'paymentStatus'");
+    if (payStatusCols.length === 0) {
+      console.log("Migrating bookings database: Adding paymentStatus column...");
+      await pool.query("ALTER TABLE bookings ADD COLUMN paymentStatus ENUM('unpaid', 'paid') NOT NULL DEFAULT 'unpaid'");
     }
 
     console.log("Connected to MySQL Database and verified table schema successfully.");
@@ -93,7 +150,7 @@ async function initializeDatabase() {
 
       await pool.query(
         "INSERT INTO users (id, name, email, phone, password, role) VALUES (?, ?, ?, ?, ?, ?)",
-        ["USR-ADMIN", "FrostPitch Admin", "admin@frostpitch.in", "+91 99999 88888", adminPasswordHashed, "admin"]
+        ["USR-ADMIN", "Don Bosco Turf Admin", "admin@donboscoturf.in", "+91 99999 88888", adminPasswordHashed, "admin"]
       );
 
       await pool.query(
@@ -228,13 +285,31 @@ function hasConflict(b1, b2) {
 app.post("/api/auth/signup", async (req, res) => {
   const { name, email, phone, password } = req.body;
 
-  if (!name || !email || !phone || !password) {
+  const nameTrimmed = typeof name === 'string' ? name.trim() : "";
+  const emailTrimmed = typeof email === 'string' ? email.trim().toLowerCase() : "";
+  const phoneTrimmed = typeof phone === 'string' ? phone.trim() : "";
+
+  if (!nameTrimmed || !emailTrimmed || !phoneTrimmed || !password) {
     return res.status(400).json({ error: "All fields are required" });
+  }
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(emailTrimmed)) {
+    return res.status(400).json({ error: "Invalid email format" });
+  }
+
+  const phoneDigits = phoneTrimmed.replace(/[^0-9]/g, "");
+  if (phoneDigits.length < 10) {
+    return res.status(400).json({ error: "Invalid phone number. Must contain at least 10 digits." });
+  }
+
+  if (typeof password !== 'string' || password.length < 6) {
+    return res.status(400).json({ error: "Password must be at least 6 characters long." });
   }
 
   try {
     // Check if email or phone already exists
-    const [existing] = await pool.query("SELECT id FROM users WHERE email = ? OR phone = ?", [email, phone]);
+    const [existing] = await pool.query("SELECT id FROM users WHERE email = ? OR phone = ?", [emailTrimmed, phoneTrimmed]);
     if (existing.length > 0) {
       return res.status(409).json({ error: "User with this email or phone number already exists" });
     }
@@ -245,10 +320,10 @@ app.post("/api/auth/signup", async (req, res) => {
 
     await pool.query(
       "INSERT INTO users (id, name, email, phone, password, role) VALUES (?, ?, ?, ?, ?, ?)",
-      [newId, name, email, phone, hashedPassword, "player"]
+      [newId, nameTrimmed, emailTrimmed, phoneTrimmed, hashedPassword, "player"]
     );
 
-    const userPayload = { id: newId, name, email, phone, role: "player" };
+    const userPayload = { id: newId, name: nameTrimmed, email: emailTrimmed, phone: phoneTrimmed, role: "player" };
     const token = jwt.sign(userPayload, JWT_SECRET, { expiresIn: "7d" });
 
     return res.status(201).json({ user: userPayload, token });
@@ -261,14 +336,15 @@ app.post("/api/auth/signup", async (req, res) => {
 // 2. POST /api/auth/login
 app.post("/api/auth/login", async (req, res) => {
   const { email, password } = req.body;
+  const emailTrimmed = typeof email === 'string' ? email.trim().toLowerCase() : "";
 
-  if (!email || !password) {
-    return res.status(400).json({ error: "Email and password are required" });
+  if (!emailTrimmed || !password) {
+    return res.status(400).json({ error: "Email/Phone and password are required" });
   }
 
   try {
     // Find user by email or phone
-    const [rows] = await pool.query("SELECT * FROM users WHERE email = ? OR phone = ?", [email, email]);
+    const [rows] = await pool.query("SELECT * FROM users WHERE email = ? OR phone = ?", [emailTrimmed, emailTrimmed]);
     if (rows.length === 0) {
       return res.status(401).json({ error: "Invalid email/phone or password" });
     }
@@ -317,7 +393,8 @@ app.get("/api/bookings/slots", async (req, res) => {
       [date]
     );
 
-    const candidateTimes = [
+    const [settingsRows] = await pool.query("SELECT `value` FROM settings WHERE `key` = 'available_slots'");
+    const candidateTimes = settingsRows.length > 0 ? JSON.parse(settingsRows[0].value) : [
       "06:00", "08:00", "10:00", "12:00", "14:00", 
       "16:00", "18:00", "20:00", "22:00", "00:00"
     ];
@@ -341,18 +418,96 @@ app.get("/api/bookings/slots", async (req, res) => {
   }
 });
 
+// GET /api/settings/slots - retrieve active booking slots
+app.get("/api/settings/slots", async (req, res) => {
+  try {
+    const [rows] = await pool.query("SELECT `value` FROM settings WHERE `key` = 'available_slots'");
+    const slots = rows.length > 0 ? JSON.parse(rows[0].value) : [
+      "06:00", "08:00", "10:00", "12:00", "14:00", 
+      "16:00", "18:00", "20:00", "22:00", "00:00"
+    ];
+    return res.json(slots);
+  } catch (err) {
+    console.error("Failed to retrieve slots settings:", err);
+    return res.status(500).json({ error: "Internal server error retrieving slots settings" });
+  }
+});
+
+// PUT /api/settings/slots - update available booking slots (Admin Only)
+app.put("/api/settings/slots", authenticateToken, async (req, res) => {
+  if (req.user.role !== "admin") {
+    return res.status(403).json({ error: "Forbidden: Administrative access required" });
+  }
+
+  const { slots } = req.body;
+  if (!Array.isArray(slots)) {
+    return res.status(400).json({ error: "Slots must be an array of time strings" });
+  }
+
+  const timeRegex = /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/;
+  if (!slots.every(s => typeof s === 'string' && timeRegex.test(s))) {
+    return res.status(400).json({ error: "Invalid slot format. Time slots must be in HH:MM format." });
+  }
+
+  try {
+    await pool.query(
+      "INSERT INTO settings (`key`, `value`) VALUES ('available_slots', ?) ON DUPLICATE KEY UPDATE `value` = ?",
+      [JSON.stringify(slots), JSON.stringify(slots)]
+    );
+    return res.json({ success: true, slots });
+  } catch (err) {
+    console.error("Failed to update slots settings:", err);
+    return res.status(500).json({ error: "Internal server error updating slots settings" });
+  }
+});
+
+
 // 5. POST /api/bookings
 app.post("/api/bookings", optionalAuthenticateToken, async (req, res) => {
-  const { date, time, duration, name, phone, email, team, notes } = req.body;
+  const { date, time, duration, name, phone, email, team, notes, paymentMethod, paymentStatus } = req.body;
 
-  if (!date || !time || !duration || !name || !phone) {
+  const nameTrimmed = typeof name === 'string' ? name.trim() : "";
+  const phoneTrimmed = typeof phone === 'string' ? phone.trim() : "";
+  const emailTrimmed = typeof email === 'string' ? email.trim().toLowerCase() : null;
+  const teamTrimmed = typeof team === 'string' ? team.trim() : null;
+  const notesTrimmed = typeof notes === 'string' ? notes.trim() : null;
+
+  if (!date || !time || !duration || !nameTrimmed || !phoneTrimmed) {
     return res.status(400).json({ error: "Missing required fields" });
   }
 
   const bookingDuration = Number(duration);
+  if (isNaN(bookingDuration) || bookingDuration < 1 || bookingDuration > 3) {
+    return res.status(400).json({ error: "Invalid booking duration. Must be between 1 and 3 hours." });
+  }
+
+  const phoneDigits = phoneTrimmed.replace(/[^0-9]/g, "");
+  if (phoneDigits.length < 10) {
+    return res.status(400).json({ error: "Invalid phone number. Must contain at least 10 digits." });
+  }
+
+  if (emailTrimmed) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(emailTrimmed)) {
+      return res.status(400).json({ error: "Invalid email format" });
+    }
+  }
+
   const userId = req.user ? req.user.id : null;
+  const method = paymentMethod === "online" ? "online" : "court";
+  const payStatus = paymentStatus === "paid" ? "paid" : "unpaid";
 
   try {
+    // Validate slot time exists in configured available slots
+    const [settingsRows] = await pool.query("SELECT `value` FROM settings WHERE `key` = 'available_slots'");
+    const candidateTimes = settingsRows.length > 0 ? JSON.parse(settingsRows[0].value) : [
+      "06:00", "08:00", "10:00", "12:00", "14:00", 
+      "16:00", "18:00", "20:00", "22:00", "00:00"
+    ];
+    if (!candidateTimes.includes(time)) {
+      return res.status(400).json({ error: "Selected slot time is not valid or available for booking." });
+    }
+
     const [activeBookings] = await pool.query(
       "SELECT date, time, duration FROM bookings WHERE date = ? AND status != 'cancelled'",
       [date]
@@ -371,20 +526,22 @@ app.post("/api/bookings", optionalAuthenticateToken, async (req, res) => {
     const newId = `BK-${randomNum}`;
 
     await pool.query(
-      "INSERT INTO bookings (id, date, time, duration, name, phone, email, team, notes, status, userId, createdAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+      "INSERT INTO bookings (id, date, time, duration, name, phone, email, team, notes, status, userId, createdAt, paymentMethod, paymentStatus) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
       [
         newId, 
         date, 
         time, 
         bookingDuration, 
-        name, 
-        phone, 
-        email || null, 
-        team || null, 
-        notes || null, 
+        nameTrimmed, 
+        phoneTrimmed, 
+        emailTrimmed || null, 
+        teamTrimmed || null, 
+        notesTrimmed || null, 
         "confirmed", 
         userId,
-        new Date().toISOString().slice(0, 19).replace('T', ' ')
+        new Date().toISOString().slice(0, 19).replace('T', ' '),
+        method,
+        payStatus
       ]
     );
 
@@ -471,6 +628,35 @@ app.post("/api/bookings/:id/status", authenticateToken, async (req, res) => {
   }
 });
 
+// 9. POST /api/bookings/:id/payment-status (Admin Only)
+app.post("/api/bookings/:id/payment-status", authenticateToken, async (req, res) => {
+  if (req.user.role !== "admin") {
+    return res.status(403).json({ error: "Forbidden: Administrative access required" });
+  }
+
+  const { id } = req.params;
+  const { paymentStatus } = req.body;
+
+  if (!paymentStatus || !["unpaid", "paid"].includes(paymentStatus)) {
+    return res.status(400).json({ error: "Invalid or missing paymentStatus" });
+  }
+
+  try {
+    const [rows] = await pool.query("SELECT * FROM bookings WHERE id = ?", [id]);
+    if (rows.length === 0) {
+      return res.status(404).json({ error: "Booking not found" });
+    }
+
+    await pool.query("UPDATE bookings SET paymentStatus = ? WHERE id = ?", [paymentStatus, id]);
+    
+    const [updated] = await pool.query("SELECT * FROM bookings WHERE id = ?", [id]);
+    return res.json(updated[0]);
+  } catch (err) {
+    console.error("Database error updating payment status:", err);
+    return res.status(500).json({ error: "Internal server error updating payment status" });
+  }
+});
+
 // Health check
 app.get("/health", (req, res) => {
   res.json({ status: "healthy", time: new Date().toISOString() });
@@ -478,7 +664,15 @@ app.get("/health", (req, res) => {
 
 // Initialize database and start listening
 initializeDatabase().then(() => {
+  // Production configuration safety verification
+  if (process.env.NODE_ENV === "production") {
+    if (!process.env.JWT_SECRET || process.env.JWT_SECRET === "donboscoturfsecretkey_change_me_in_prod") {
+      console.error("FATAL CONFIGURATION ERROR: JWT_SECRET must be securely configured in production mode!");
+      process.exit(1);
+    }
+  }
+
   app.listen(PORT, () => {
-    console.log(`FrostPitch MySQL Auth backend server is running on http://localhost:${PORT}`);
+    console.log(`Don Bosco Turf MySQL Auth backend server is running on http://localhost:${PORT}`);
   });
 });

@@ -29,7 +29,7 @@ function LoginPage() {
     setIsLoading(true);
     try {
       await login(email.trim(), password);
-      toast.success("Welcome back to FrostPitch!");
+      toast.success("Welcome back to Don Bosco Turf!");
       
       // Redirect based on previous location or default home
       navigate({ to: "/" });
@@ -59,9 +59,11 @@ function LoginPage() {
             <ArrowLeft className="h-3 w-3" /> Back to Home
           </Link>
           <div className="mx-auto w-12 h-12 rounded-2xl bg-primary/20 grid place-items-center mb-3 glow-emerald">
-            <Snowflake className="h-6 w-6 text-primary" />
+            <svg viewBox="0 0 24 24" className="h-6 w-6 text-emerald-500 shrink-0" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M4 13l4 4L20 7" />
+            </svg>
           </div>
-          <h1 className="text-2xl font-bold tracking-tight font-display">Log in to FrostPitch</h1>
+          <h1 className="text-2xl font-bold tracking-tight font-display">Log in to Don Bosco Turf</h1>
           <p className="text-sm text-muted-foreground mt-1">Book slots and manage your matches.</p>
         </div>
 

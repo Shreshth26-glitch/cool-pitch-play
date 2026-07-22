@@ -41,7 +41,7 @@ function SignupPage() {
         phone: phone.trim(),
         password,
       });
-      toast.success("Welcome to FrostPitch! Account created.");
+      toast.success("Welcome to Don Bosco Turf! Account created.");
       navigate({ to: "/" });
     } catch (err: any) {
       console.error(err);
@@ -69,10 +69,12 @@ function SignupPage() {
             <ArrowLeft className="h-3 w-3" /> Back to Home
           </Link>
           <div className="mx-auto w-12 h-12 rounded-2xl bg-primary/20 grid place-items-center mb-3 glow-emerald">
-            <Snowflake className="h-6 w-6 text-primary" />
+            <svg viewBox="0 0 24 24" className="h-6 w-6 text-emerald-500 shrink-0" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M4 13l4 4L20 7" />
+            </svg>
           </div>
           <h1 className="text-2xl font-bold tracking-tight font-display">Create an account</h1>
-          <p className="text-sm text-muted-foreground mt-1">Start booking slots at FrostPitch Bhilwara.</p>
+          <p className="text-sm text-muted-foreground mt-1">Start booking slots at Don Bosco Turf Bhilwara.</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
