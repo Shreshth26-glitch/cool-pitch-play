@@ -190,13 +190,3 @@
 @utility animate-mist { animation: mist-drift 12s linear infinite; }
 @utility animate-pulse-glow { animation: pulse-glow 3s ease-in-out infinite; }
 
-/* Custom Cursor Hiding on Desktop Screens */
-@media (min-width: 769px) {
-  html, body, a, button, [role="button"], [type="button"], [type="submit"] {
-    cursor: none !important;
-  }
-  input, textarea, select, [contenteditable="true"] {
-    cursor: auto !important;
-  }
-}
-
