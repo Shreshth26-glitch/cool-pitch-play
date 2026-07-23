@@ -196,28 +196,6 @@ function SDKPreviewCard() {
   );
 }
 
-/* ---------------- Mouse follower ---------------- */
-
-function Cursor() {
-  const [pos, setPos] = useState({ x: -100, y: -100 });
-  const [visible, setVisible] = useState(false);
-  useEffect(() => {
-    const onMove = (e: MouseEvent) => { setPos({ x: e.clientX, y: e.clientY }); setVisible(true); };
-    const onLeave = () => setVisible(false);
-    window.addEventListener("mousemove", onMove);
-    window.addEventListener("mouseleave", onLeave);
-    return () => { window.removeEventListener("mousemove", onMove); window.removeEventListener("mouseleave", onLeave); };
-  }, []);
-  return (
-    <motion.div
-      aria-hidden
-      className="pointer-events-none fixed left-0 top-0 z-[100] hidden h-8 w-8 rounded-full mix-blend-screen md:block"
-      animate={{ x: pos.x - 16, y: pos.y - 16, opacity: visible ? 1 : 0 }}
-      transition={{ type: "spring", stiffness: 500, damping: 40, mass: 0.3 }}
-      style={{ background: "radial-gradient(circle, rgba(148, 138, 227, 0.45), transparent 70%)" }}
-    />
-  );
-}
 
 /* ---------------- Loading screen ---------------- */
 
@@ -1551,7 +1529,6 @@ function LandingPage() {
   return (
     <>
       <AnimatePresence>{loading && <Loader onDone={() => setLoading(false)} />}</AnimatePresence>
-      <Cursor />
       <ScrollProgress />
 
       <div className="relative min-h-screen bg-background text-foreground">
