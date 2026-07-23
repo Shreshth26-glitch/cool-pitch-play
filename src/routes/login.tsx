@@ -29,7 +29,7 @@ function LoginPage() {
     setIsLoading(true);
     try {
       await login(email.trim(), password);
-      toast.success("Welcome back to Don Bosco Turf!");
+      toast.success("Welcome back to frostPitch!");
       
       // Redirect based on previous location or default home
       navigate({ to: "/" });
@@ -42,70 +42,63 @@ function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground flex flex-col justify-center items-center px-4 relative overflow-hidden">
-      {/* Background neon glows */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 h-[50vh] w-[500px] blur-3xl opacity-20" style={{ background: "radial-gradient(circle, oklch(0.80 0.14 78), transparent 70%)" }} />
-      </div>
-
+    <div className="min-h-screen bg-[#09090b] text-white flex flex-col justify-center items-center px-4 relative overflow-hidden">
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
-        className="w-full max-w-md rounded-3xl glass-strong p-8 relative z-10"
+        className="w-full max-w-md rounded-xl bg-[#161618] border border-[#27272a] p-8 relative z-10 shadow-none hover:border-iris-violet/30 transition-all duration-300"
       >
         <div className="text-center mb-8">
-          <Link to="/" className="inline-flex items-center gap-2 text-xs text-muted-foreground hover:text-primary transition mb-4">
-            <ArrowLeft className="h-3 w-3" /> Back to Home
+          <Link to="/" className="inline-flex items-center gap-2 text-xs font-bold text-ash-text hover:text-white transition mb-4">
+            <ArrowLeft className="h-3.5 w-3.5" /> Back to Home
           </Link>
-          <div className="mx-auto w-12 h-12 rounded-2xl bg-primary/20 grid place-items-center mb-3 glow-emerald">
-            <svg viewBox="0 0 24 24" className="h-6 w-6 text-emerald-500 shrink-0" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M4 13l4 4L20 7" />
-            </svg>
+          <div className="mx-auto w-12 h-12 rounded-lg bg-white text-black flex items-center justify-center font-bold text-base mb-3">
+            F
           </div>
-          <h1 className="text-2xl font-bold tracking-tight font-display">Log in to Don Bosco Turf</h1>
-          <p className="text-sm text-muted-foreground mt-1">Book slots and manage your matches.</p>
+          <h1 className="text-xl font-bold tracking-tight text-white font-sans">Log in to frostPitch</h1>
+          <p className="text-xs text-ash-text mt-1">Book slots and manage your matches.</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="space-y-1.5">
-            <Label className="text-xs font-semibold text-muted-foreground">Email or Phone Number</Label>
+          <div className="space-y-1.5 text-left">
+            <Label className="text-[10px] font-bold text-ash-text uppercase">Email or Phone Number</Label>
             <div className="relative">
-              <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-ash-text" />
               <Input
                 type="text"
                 placeholder="player@gmail.com or +91..."
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="pl-10 bg-white/5 border-border py-5"
+                className="pl-10 bg-[#121214] border-[#27272a] text-white focus:border-iris-violet/50 py-5 rounded-md text-xs"
                 required
               />
             </div>
           </div>
 
-          <div className="space-y-1.5">
-            <Label className="text-xs font-semibold text-muted-foreground">Password</Label>
+          <div className="space-y-1.5 text-left">
+            <Label className="text-[10px] font-bold text-ash-text uppercase">Password</Label>
             <div className="relative">
-              <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-ash-text" />
               <Input
                 type="password"
                 placeholder="••••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="pl-10 bg-white/5 border-border py-5"
+                className="pl-10 bg-[#121214] border-[#27272a] text-white focus:border-iris-violet/50 py-5 rounded-md text-xs"
                 required
               />
             </div>
           </div>
 
-          <Button type="submit" disabled={isLoading} className="w-full rounded-full bg-primary text-primary-foreground py-6 font-semibold shadow-[var(--shadow-glow)] hover:opacity-90">
+          <Button type="submit" disabled={isLoading} className="w-full rounded-lg bg-gradient-to-r from-iris-violet to-signal-blue border border-iris-violet/20 hover:shadow-[0_0_15px_rgba(148,138,227,0.3)] text-white shadow-none py-5 font-bold uppercase tracking-wider text-xs transition duration-200">
             {isLoading ? "Authenticating..." : "Log In"}
           </Button>
         </form>
 
-        <div className="text-center mt-6 text-xs text-muted-foreground">
+        <div className="text-center mt-6 text-xs text-ash-text">
           Don't have an account?{" "}
-          <Link to="/signup" className="text-primary hover:underline font-semibold">
+          <Link to="/signup" className="text-iris-violet hover:underline font-bold">
             Sign up
           </Link>
         </div>

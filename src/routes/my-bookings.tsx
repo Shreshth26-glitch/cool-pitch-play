@@ -81,30 +81,25 @@ function MyBookingsPage() {
 
   if (authLoading || (!isAuthenticated && authLoading)) {
     return (
-      <div className="min-h-screen bg-background text-foreground flex flex-col justify-center items-center">
-        <RefreshCw className="h-8 w-8 text-primary animate-spin" />
-        <p className="text-xs text-muted-foreground mt-3">Loading account data...</p>
+      <div className="min-h-screen bg-[#09090b] text-white flex flex-col justify-center items-center">
+        <RefreshCw className="h-8 w-8 text-iris-violet animate-spin" />
+        <p className="text-xs text-ash-text mt-3">Loading account data...</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-background text-foreground pb-16 relative overflow-hidden">
-      {/* Background neon glows */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute top-0 right-1/4 h-[40vh] w-96 blur-3xl opacity-10" style={{ background: "radial-gradient(circle, oklch(0.80 0.14 78), transparent 70%)" }} />
-      </div>
-
+    <div className="min-h-screen bg-[#09090b] text-white pb-16 relative overflow-hidden">
       {/* Header */}
-      <header className="border-b border-border bg-background/50 backdrop-blur-md sticky top-0 z-30">
+      <header className="border-b border-white/10 bg-transparent sticky top-0 z-30 py-1">
         <div className="mx-auto max-w-6xl px-4 py-4 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2">
-            <svg viewBox="0 0 24 24" className="h-5 w-5 text-emerald-500 shrink-0" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M4 13l4 4L20 7" />
-            </svg>
-            <div>
-              <div className="text-xs font-bold tracking-wider leading-none">DON BOSCO</div>
-              <div className="text-[8px] uppercase tracking-[0.25em] text-muted-foreground">User Dashboard</div>
+            <div className="h-5 w-5 rounded bg-white text-black flex items-center justify-center font-bold text-xs">
+              F
+            </div>
+            <div className="text-left">
+              <div className="text-xs font-bold tracking-wider leading-none text-white uppercase">frostPitch</div>
+              <div className="text-[8px] uppercase tracking-[0.25em] text-ash-text font-bold mt-0.5">User Dashboard</div>
             </div>
           </Link>
 
@@ -115,16 +110,16 @@ function MyBookingsPage() {
                 variant="outline" 
                 size="sm" 
                 disabled={isLoading}
-                className="rounded-full border-border glass text-xs"
+                className="rounded-lg border-white/10 hover:bg-white/10 text-white py-2 shadow-none"
               >
                 <RefreshCw className={`h-3 w-3 mr-1.5 ${isLoading ? "animate-spin" : ""}`} /> Refresh
               </Button>
             )}
             <Button 
               onClick={handleLogout} 
-              variant="destructive" 
+              variant="outline"
               size="sm" 
-              className="rounded-full bg-destructive/20 border border-destructive/30 hover:bg-destructive/40 text-destructive text-xs"
+              className="rounded-lg border-white/10 text-ash-text hover:text-hot-pink hover:bg-white/10 text-xs py-2 shadow-none"
             >
               <LogOut className="h-3 w-3 mr-1.5" /> Logout
             </Button>
@@ -139,31 +134,31 @@ function MyBookingsPage() {
             <motion.div 
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
-              className="md:col-span-1 rounded-3xl glass p-6"
+              className="md:col-span-1 rounded-xl bg-[#161618] border border-[#27272a] p-6 shadow-none"
             >
               <div className="text-center mb-6">
-                <div className="w-16 h-16 rounded-full bg-primary/25 text-primary grid place-items-center font-bold text-xl mx-auto mb-3">
+                <div className="w-16 h-16 rounded bg-[#1d1d21] text-iris-violet border border-[#27272a]/50 flex items-center justify-center font-bold text-xl mx-auto mb-3">
                   {user.name.split(" ").map(w => w[0]).join("")}
                 </div>
-                <h3 className="font-semibold text-lg">{user.name}</h3>
-                <span className="inline-block mt-1 text-[10px] uppercase tracking-wider px-2 py-0.5 rounded bg-white/10 text-muted-foreground">
+                <h3 className="font-bold text-base text-white">{user.name}</h3>
+                <span className="inline-block mt-1.5 text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-[#1c1c1f] border border-[#27272a] text-ash-text">
                   {user.role} Member
                 </span>
               </div>
 
-              <div className="space-y-3 text-xs text-muted-foreground border-t border-border pt-4">
+              <div className="space-y-3 text-xs text-ash-text border-t border-[#27272a] pt-4 text-left">
                 <div>
-                  <div className="uppercase tracking-widest text-[9px] text-muted-foreground/60 mb-0.5">Email</div>
-                  <div className="text-foreground font-medium break-all">{user.email}</div>
+                  <div className="uppercase tracking-widest text-[9px] font-bold text-ash-text/70 mb-0.5">Email</div>
+                  <div className="text-white font-semibold break-all">{user.email}</div>
                 </div>
                 <div>
-                  <div className="uppercase tracking-widest text-[9px] text-muted-foreground/60 mb-0.5">Phone</div>
-                  <div className="text-foreground font-medium">{user.phone}</div>
+                  <div className="uppercase tracking-widest text-[9px] font-bold text-ash-text/70 mb-0.5">Phone</div>
+                  <div className="text-white font-semibold">{user.phone}</div>
                 </div>
                 {user.role === "admin" && (
                   <div className="pt-2">
                     <Link to="/admin">
-                      <Button size="sm" className="w-full rounded-full bg-primary text-primary-foreground font-semibold text-xs">
+                      <Button size="sm" className="w-full rounded-lg bg-white hover:bg-white/95 text-black border-0 shadow-none font-bold text-xs py-2">
                         Open Admin Panel
                       </Button>
                     </Link>
@@ -176,32 +171,34 @@ function MyBookingsPage() {
           {/* Bookings List Card */}
           <div className="md:col-span-3">
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-xl font-bold tracking-tight flex items-center gap-2">
-                <Trophy className="h-5 w-5 text-primary" /> Your Matches
+              <h2 className="text-lg font-bold tracking-tight text-white flex items-center gap-2">
+                <Trophy className="h-5 w-5 text-iris-violet" /> Your Matches
               </h2>
-              <Link to="/" className="text-xs text-primary hover:underline font-semibold flex items-center gap-1">
+              <Link to="/" className="text-xs text-iris-violet hover:underline font-bold flex items-center gap-1">
                 <ArrowLeft className="h-3 w-3" /> Book another slot
               </Link>
             </div>
 
             {/* Custom Tab Switcher */}
-            <div className="flex p-1 bg-white/5 backdrop-blur-md rounded-2xl border border-white/10 mb-6 max-w-sm">
+            <div className="flex p-1 bg-[#161618] border border-[#27272a] rounded-xl mb-6 max-w-sm shadow-none">
               <button
                 onClick={() => setActiveTab("upcoming")}
-                className={`relative flex-1 py-2 text-xs font-semibold rounded-xl transition-all duration-300 ${
-                  activeTab === "upcoming" ? "text-primary-foreground" : "text-muted-foreground hover:text-foreground"
+                className={`relative flex-1 py-2 text-xs font-bold rounded-lg transition-all duration-300 ${
+                  activeTab === "upcoming" ? "text-black" : "text-ash-text hover:text-white"
                 }`}
               >
                 {activeTab === "upcoming" && (
                   <motion.div
                     layoutId="activeTabBackground"
-                    className="absolute inset-0 bg-primary rounded-xl shadow-[var(--shadow-glow)]"
+                    className="absolute inset-0 bg-white rounded-lg shadow-none"
                     transition={{ type: "spring", stiffness: 380, damping: 30 }}
                   />
                 )}
                 <span className="relative z-10 flex items-center justify-center gap-1.5">
                   Upcoming Slots
-                  <span className="px-1.5 py-0.2 text-[10px] bg-white/10 rounded-full font-normal">
+                  <span className={`px-1.5 py-0.2 text-[9px] rounded font-normal font-mono ${
+                    activeTab === "upcoming" ? "bg-black/10 text-black" : "bg-[#1c1c1f] text-ash-text border border-[#27272a]/50"
+                  }`}>
                     {(() => {
                       const now = Date.now();
                       return bookings.filter(b => new Date(`${b.date}T${b.time}:00`).getTime() >= now).length;
@@ -211,20 +208,22 @@ function MyBookingsPage() {
               </button>
               <button
                 onClick={() => setActiveTab("past")}
-                className={`relative flex-1 py-2 text-xs font-semibold rounded-xl transition-all duration-300 ${
-                  activeTab === "past" ? "text-primary-foreground" : "text-muted-foreground hover:text-foreground"
+                className={`relative flex-1 py-2 text-xs font-bold rounded-lg transition-all duration-300 ${
+                  activeTab === "past" ? "text-black" : "text-ash-text hover:text-white"
                 }`}
               >
                 {activeTab === "past" && (
                   <motion.div
                     layoutId="activeTabBackground"
-                    className="absolute inset-0 bg-primary rounded-xl shadow-[var(--shadow-glow)]"
+                    className="absolute inset-0 bg-white rounded-lg shadow-none"
                     transition={{ type: "spring", stiffness: 380, damping: 30 }}
                   />
                 )}
                 <span className="relative z-10 flex items-center justify-center gap-1.5">
                   Past Matches
-                  <span className="px-1.5 py-0.2 text-[10px] bg-white/10 rounded-full font-normal">
+                  <span className={`px-1.5 py-0.2 text-[9px] rounded font-normal font-mono ${
+                    activeTab === "past" ? "bg-black/10 text-black" : "bg-[#1c1c1f] text-ash-text border border-[#27272a]/50"
+                  }`}>
                     {(() => {
                       const now = Date.now();
                       return bookings.filter(b => new Date(`${b.date}T${b.time}:00`).getTime() < now).length;
@@ -236,21 +235,21 @@ function MyBookingsPage() {
 
             <div className="space-y-3">
               {isLoading ? (
-                <div className="rounded-3xl glass p-10 text-center">
-                  <RefreshCw className="h-8 w-8 text-primary animate-spin mx-auto mb-3" />
-                  <p className="text-sm text-muted-foreground">Fetching your bookings list...</p>
+                <div className="rounded-xl bg-[#161618] border border-[#27272a] p-10 text-center shadow-none">
+                  <RefreshCw className="h-8 w-8 text-iris-violet animate-spin mx-auto mb-3" />
+                  <p className="text-xs text-ash-text">Fetching your bookings list...</p>
                 </div>
               ) : bookings.length === 0 ? (
                 <motion.div 
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="rounded-3xl glass p-12 text-center"
+                  className="rounded-xl bg-[#161618] border border-[#27272a] p-12 text-center shadow-none"
                 >
-                  <CalendarIcon className="h-10 w-10 text-muted-foreground mx-auto mb-3" />
-                  <h3 className="text-lg font-semibold">No bookings found</h3>
-                  <p className="text-sm text-muted-foreground mt-1 mb-6">You haven't booked any slots with this account yet.</p>
+                  <CalendarIcon className="h-10 w-10 text-ash-text mx-auto mb-3" />
+                  <h3 className="text-base font-bold text-white">No bookings found</h3>
+                  <p className="text-xs text-ash-text mt-1 mb-6">You haven't booked any slots with this account yet.</p>
                   <Link to="/">
-                    <Button className="rounded-full bg-primary text-primary-foreground px-6">
+                    <Button className="rounded-lg bg-gradient-to-r from-iris-violet to-signal-blue border border-iris-violet/20 hover:shadow-[0_0_15px_rgba(148,138,227,0.3)] text-white px-6 py-2.5 text-xs font-bold uppercase tracking-wider">
                       Book a Turf Slot Now
                     </Button>
                   </Link>
@@ -269,20 +268,20 @@ function MyBookingsPage() {
                     <motion.div 
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
-                      className="rounded-3xl glass p-12 text-center"
+                      className="rounded-xl bg-[#161618] border border-[#27272a] p-12 text-center shadow-none"
                     >
-                      <CalendarIcon className="h-10 w-10 text-muted-foreground mx-auto mb-3" />
-                      <h3 className="text-lg font-semibold">
+                      <CalendarIcon className="h-10 w-10 text-ash-text mx-auto mb-3" />
+                      <h3 className="text-base font-bold text-white">
                         {activeTab === "upcoming" ? "No upcoming matches" : "No past matches"}
                       </h3>
-                      <p className="text-sm text-muted-foreground mt-1 mb-6">
+                      <p className="text-xs text-ash-text mt-1 mb-6">
                         {activeTab === "upcoming" 
                           ? "You don't have any upcoming match slots scheduled." 
                           : "You don't have any past match history."}
                       </p>
                       {activeTab === "upcoming" && (
                         <Link to="/">
-                          <Button className="rounded-full bg-primary text-primary-foreground px-6">
+                          <Button className="rounded-lg bg-gradient-to-r from-iris-violet to-signal-blue border border-iris-violet/20 hover:shadow-[0_0_15px_rgba(148,138,227,0.3)] text-white px-6 py-2.5 text-xs font-bold uppercase tracking-wider">
                             Book a Turf Slot Now
                           </Button>
                         </Link>
@@ -299,30 +298,30 @@ function MyBookingsPage() {
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, scale: 0.95 }}
-                        className="rounded-2xl glass p-5 flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-4 hover:glass-strong transition"
+                        className="rounded-xl bg-[#161618] border border-[#27272a] p-5 flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-4 hover:border-iris-violet/40 transition-all duration-300 shadow-none"
                       >
-                        <div className="space-y-1">
+                        <div className="space-y-1 text-left">
                           <div className="flex items-center gap-2">
-                            <span className="text-xs font-mono text-muted-foreground font-semibold">{b.id}</span>
-                            <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-semibold border ${
-                              b.status === "confirmed" ? "bg-emerald-500/10 text-primary border-primary/20" :
-                              b.status === "pending" ? "bg-amber-500/10 text-amber-500 border-amber-500/20" :
-                              "bg-rose-500/10 text-rose-500 border-rose-500/20"
+                            <span className="text-[10px] font-mono text-ash-text font-bold">{b.id}</span>
+                            <span className={`inline-flex items-center rounded px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider border ${
+                              b.status === "confirmed" ? "bg-mint-green/10 text-mint-green border-mint-green/30" :
+                              b.status === "pending" ? "bg-canary-yellow/10 text-canary-yellow border-canary-yellow/30" :
+                              "bg-hot-pink/10 text-hot-pink border-hot-pink/30"
                             }`}>
                               {b.status}
                             </span>
                           </div>
-                          <div className="text-base font-semibold text-foreground">
+                          <div className="text-sm font-bold text-white mt-1">
                             {new Date(b.date).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
                           </div>
-                          <div className="text-xs text-muted-foreground flex flex-wrap gap-x-4 gap-y-1">
-                            <span className="flex items-center gap-1"><Clock className="h-3 w-3 text-primary" /> {b.time}</span>
+                          <div className="text-xs text-ash-text flex flex-wrap gap-x-4 gap-y-1 font-medium mt-0.5">
+                            <span className="flex items-center gap-1"><Clock className="h-3 w-3 text-iris-violet" /> {b.time}</span>
                             <span>• {b.duration} {b.duration === 1 ? "hour" : "hours"}</span>
-                            {b.team && <span>• Team: <strong className="text-foreground">{b.team}</strong></span>}
-                            <span>• Payment: <strong className="text-foreground">{b.paymentMethod === "online" ? "Online" : "Pay at Court"}</strong> ({b.paymentStatus === "paid" ? <span className="text-emerald-500 font-bold">Paid</span> : <span className="text-amber-500 font-bold">Unpaid</span>})</span>
+                            {b.team && <span>• Team: <strong className="text-white">{b.team}</strong></span>}
+                            <span>• Payment: <strong className="text-white">{b.paymentMethod === "online" ? "Online" : "Pay at Court"}</strong> ({b.paymentStatus === "paid" ? <span className="text-mint-green bg-mint-green/10 border border-mint-green/20 px-1.5 py-0.5 rounded font-bold">Paid</span> : <span className="text-canary-yellow bg-canary-yellow/10 border border-canary-yellow/20 px-1.5 py-0.5 rounded font-bold">Unpaid</span>})</span>
                           </div>
                           {b.notes && (
-                            <div className="text-xs text-muted-foreground mt-2 italic bg-white/5 rounded p-2">
+                            <div className="text-xs text-ash-text mt-2 italic bg-[#1c1c1f] border border-[#27272a]/50 rounded p-2">
                               Request: "{b.notes}"
                             </div>
                           )}
@@ -332,18 +331,18 @@ function MyBookingsPage() {
                           {isCancellable(b) ? (
                             <Button
                               onClick={() => handleCancelBooking(b.id)}
-                              variant="destructive"
+                              variant="outline"
                               size="sm"
-                              className="rounded-full bg-rose-500/20 border border-rose-500/30 hover:bg-rose-500/40 text-rose-500 text-xs py-5 px-5"
+                              className="rounded-lg bg-[#121214] border border-[#27272a] text-ash-text hover:text-hot-pink hover:bg-hot-pink/5 hover:border-hot-pink/30 text-xs py-4 px-4 shadow-none font-semibold transition duration-200"
                             >
-                              <XCircle className="h-4 w-4 mr-1.5" /> Cancel Slot
+                              <XCircle className="h-3.5 w-3.5 mr-1.5" /> Cancel Slot
                             </Button>
                           ) : b.status !== "cancelled" ? (
-                            <div className="text-[10px] text-muted-foreground/60 max-w-[150px] text-left sm:text-right italic">
+                            <div className="text-[10px] text-ash-text max-w-[150px] text-left sm:text-right italic">
                               Non-cancellable (deadline passed)
                             </div>
                           ) : (
-                            <span className="text-xs text-rose-500 font-semibold italic">Cancelled</span>
+                            <span className="text-xs text-hot-pink font-bold italic uppercase tracking-wider bg-hot-pink/10 border border-hot-pink/25 rounded px-2 py-0.5 font-sans">Cancelled</span>
                           )}
                         </div>
                       </motion.div>

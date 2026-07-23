@@ -257,7 +257,7 @@ function AdminDashboard() {
             <div className="mx-auto w-12 h-12 rounded-2xl bg-primary/20 grid place-items-center mb-3 glow-emerald">
               <Lock className="h-6 w-6 text-primary" />
             </div>
-            <h1 className="text-2xl font-bold tracking-tight font-display">Don Bosco Turf Admin</h1>
+            <h1 className="text-2xl font-bold tracking-tight font-display">frostPitch Admin</h1>
             {isAuthenticated && !isAdmin ? (
               <p className="text-sm text-rose-500 mt-1 font-semibold">Access Denied: Admin permissions required.</p>
             ) : (
@@ -316,7 +316,7 @@ function AdminDashboard() {
               <path d="M4 13l4 4L20 7" />
             </svg>
             <div>
-              <div className="text-xs font-bold tracking-wider leading-none">DON BOSCO</div>
+              <div className="text-xs font-bold tracking-wider leading-none">frostPitch</div>
               <div className="text-[8px] uppercase tracking-[0.25em] text-muted-foreground">Admin Portal</div>
             </div>
           </Link>
@@ -866,7 +866,7 @@ function AdminDashboard() {
               </ul>
             </div>
             <div className="pt-4 border-t border-border mt-4 text-xs text-muted-foreground text-center">
-              Don Bosco Turf Management System · Bhilwara
+              frostPitch Management System · Bhilwara
             </div>
           </div>
         </div>
